@@ -1,7 +1,6 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from typing_extensions import Self
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
@@ -28,11 +27,9 @@ class AlienContact(BaseModel):
     is_verified: bool = False
 
     @model_validator(mode="after")
-    def validate_contact(self) -> Self:
+    def validate_contact(self) -> "AlienContact":
         if not self.contact_id.startswith("AC"):
-            raise ValueError(
-                'Contact ID must start with "AC"'
-            )
+            raise ValueError("Contact ID must start with AC")
 
         if (
             self.contact_type == ContactType.PHYSICAL
@@ -52,7 +49,7 @@ class AlienContact(BaseModel):
 
         if (
             self.signal_strength > 7.0
-            and not self.message_received
+            and self.message_received is None
         ):
             raise ValueError(
                 "Strong signals should include received messages"
@@ -62,41 +59,37 @@ class AlienContact(BaseModel):
 
 
 def main() -> None:
-    print("Alien Contact Log Validation")
-    print("=" * 38)
-
-    contact = AlienContact(
-        contact_id="AC_2024_001",
-        timestamp="2026-09-09T12:00:00",
-        location="Area 51, Nevada",
-        contact_type=ContactType.RADIO,
-        signal_strength=8.5,
-        duration_minutes=45,
-        witness_count=5,
-        message_received="Greetings from Zeta Reticuli",
-    )
-
-    print("Valid contact report:")
-    print(f"ID: {contact.contact_id}")
-    print(f"Type: {contact.contact_type.value}")
-    print(f"Location: {contact.location}")
-    print(f"Signal: {contact.signal_strength}/10")
-    print(f"Duration: {contact.duration_minutes} minutes")
-    print(f"Witnesses: {contact.witness_count}")
-    print(f"Message: {contact.message_received!r}")
-
-    print("=" * 38)
-
     try:
+        contact = AlienContact(
+            contact_id="AC_2024_001",
+            timestamp="2026-09-11T12:00:00",
+            location="Area 51, Nevada",
+            contact_type=ContactType.RADIO,
+            signal_strength=8.5,
+            duration_minutes=45,
+            witness_count=5,
+            message_received="Greetings from Zeta Reticuli",
+        )
+
+        print("Valid contact report:")
+        print(f"ID: {contact.contact_id}")
+        print(f"Type: {contact.contact_type.value}")
+        print(f"Location: {contact.location}")
+        print(f"Signal: {contact.signal_strength}/10")
+        print(f"Duration: {contact.duration_minutes} minutes")
+        print(f"Witnesses: {contact.witness_count}")
+        print(f"Message: {contact.message_received}")
+
         AlienContact(
             contact_id="AC_2024_002",
-            timestamp="2026-09-09T13:00:00",
-            location="Nevada Desert",
+            timestamp="2026-09-11T12:00:00",
+            location="Mars",
             contact_type=ContactType.TELEPATHIC,
-            signal_strength=4.0,
+            signal_strength=5.0,
             duration_minutes=10,
             witness_count=1,
         )
+
     except ValidationError as error:
         print("Expected validation error:")
         print(error.errors()[0]["msg"])
