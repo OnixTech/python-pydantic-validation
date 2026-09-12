@@ -1,5 +1,5 @@
 from datetime import datetime
-deom enum import Enum
+from enum import Enum
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
@@ -8,7 +8,7 @@ class Rank(Enum):
     CADET = "cadet"
     OFFICER = "officer"
     LIEUTENANT = "lieutenant"
-    CAPITAIN = "capitan"
+    CAPTAIN = "captain"
     COMMANDER = "commander"
 
 
@@ -16,31 +16,33 @@ class CrewMember(BaseModel):
     member_id: str = Field(min_length=3, max_length=10)
     name: str = Field(min_length=2, max_length=50)
     rank: Rank
-    age: int = Field(ge=18, le=50)
+    age: int = Field(ge=18, le=80)
     specialization: str = Field(min_length=3, max_length=30)
     years_experience: int = Field(ge=0, le=50)
     is_active: bool = True
 
 class SpaceMission(BaseModel):
-    mission_id: str = Field(min_legth=5, max_length=15)
-    mission_name: str = Field(min_legth=3, max_length=100)
-    destination: str = Field(min_legth=3, max_length=50)
-    launch_date: DateTime
-    durations_days: int = Field(ge=1, le=3650)
+    mission_id: str = Field(min_length=5, max_length=15)
+    mission_name: str = Field(min_length=3, max_length=100)
+    destination: str = Field(min_length=3, max_length=50)
+    launch_date: datetime
+    duration_days: int = Field(ge=1, le=3650)
     crew: list[CrewMember] = Field(min_length=1, max_length=12)
     mission_status: str = "planned"
     budget_millions: float = Field(ge=1.0, le=10000.0)
 
     @model_validator(mode="after")
     def validate_mission(self) -> "SpaceMission":
-        if not self.mission_id.startwith("M")
+        has_leader: bool = False
+
+        if not self.mission_id.startswith("M"):
             raise ValueError("Mission ID must start with M")
 
-        for member in self.crew
-                if member.rank == Rank.COMMANDER:
-                    has_leader = True
-                elif member.rank == Rank.CAPITAN:
-                    has_leader = True
+        for member in self.crew:
+            if member.rank == Rank.COMMANDER:
+                has_leader = True
+            elif member.rank == Rank.CAPTAIN:
+                has_leader = True
 
         if not has_leader:
             raise ValueError(
@@ -48,10 +50,12 @@ class SpaceMission(BaseModel):
             )
 
         if self.duration_days > 365:
-            experienced = sum(
-                member.years_experience >= 5
-                for member in self.crew
-            )
+            experienced = 0
+
+            for member in self.crew:
+                if member.years_experience >= 5:
+                    experienced += 1
+            
             if experienced < len(self.crew) / 2:
                 raise ValueError(
                     "Long missions need 50% experienced crew"
@@ -100,6 +104,14 @@ def main() -> None:
         print(f"Duration: {mission.duration_days} days")
         print(f"Budget: ${mission.budget_millions}M")
         print(f"Crew size: {len(mission.crew)}")
+        print("Crew members:")
+
+        for member in mission.crew:
+            print(
+                f"- {member.name} ({member.rank.value})"
+                f"- {member.specialization}"
+            )
+
         SpaceMission(
             mission_id="M2024_TEST",
             mission_name="Test Mission",
@@ -125,5 +137,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-
     main()
