@@ -93,7 +93,7 @@ def main() -> None:
             mission_id="M2024_MARS",
             mission_name="Mars Colony Establishment",
             destination="Mars",
-            launch_date="2026-10-01T10:00:00",
+            launch_date=datetime(2026, 10, 1, 10, 0, 0),
             duration_days=900,
             crew=[commander, officer],
             budget_millions=2500.0,
