@@ -21,6 +21,7 @@ class CrewMember(BaseModel):
     years_experience: int = Field(ge=0, le=50)
     is_active: bool = True
 
+
 class SpaceMission(BaseModel):
     mission_id: str = Field(min_length=5, max_length=15)
     mission_name: str = Field(min_length=3, max_length=100)
@@ -55,14 +56,15 @@ class SpaceMission(BaseModel):
             for member in self.crew:
                 if member.years_experience >= 5:
                     experienced += 1
-            
+
             if experienced < len(self.crew) / 2:
                 raise ValueError(
                     "Long missions need 50% experienced crew"
                 )
 
-        if not all(member.is_active for member in self.crew):
-            raise ValueError("All crew members must be active")
+        for member in self.crew:
+            if not member.is_active:
+                raise ValueError("All crew members must be active")
 
         return self
 
@@ -108,7 +110,7 @@ def main() -> None:
 
         for member in mission.crew:
             print(
-                f"- {member.name} ({member.rank.value})"
+                f"- {member.name} ({member.rank.value}) "
                 f"- {member.specialization}"
             )
 
