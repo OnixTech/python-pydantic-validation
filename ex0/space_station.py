@@ -51,7 +51,7 @@ def main() -> None:
             crew_size=25,
             power_level=80.0,
             oxygen_level=90.0,
-            last_maintenance="2026-09-01T10:30:00",
+            last_maintenance=datetime(2026, 9, 6, 10, 0, 0),
         )
     except ValidationError as error:
         print("Expected validation error:")
