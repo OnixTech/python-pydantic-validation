@@ -62,7 +62,7 @@ def main() -> None:
     try:
         contact = AlienContact(
             contact_id="AC_2024_001",
-            timestamp="2026-09-11T12:00:00",
+            timestamp=datetime(2026, 9, 11, 10, 0, 0),
             location="Area 51, Nevada",
             contact_type=ContactType.RADIO,
             signal_strength=8.5,
@@ -82,7 +82,7 @@ def main() -> None:
 
         AlienContact(
             contact_id="AC_2024_002",
-            timestamp="2026-09-11T12:00:00",
+            timestamp=datetime(2026, 9, 11, 10, 0, 0),
             location="Mars",
             contact_type=ContactType.TELEPATHIC,
             signal_strength=5.0,

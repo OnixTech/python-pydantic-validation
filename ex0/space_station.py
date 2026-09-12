@@ -25,7 +25,7 @@ def main() -> None:
         crew_size=6,
         power_level=85.5,
         oxygen_level=92.3,
-        last_maintenance="2026-09-01T10:30:00",
+        last_maintenance=datetime(2026, 10, 1, 10, 0, 0),
         is_operational=True,
         notes="All systems nominal",
     )

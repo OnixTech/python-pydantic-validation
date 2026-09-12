@@ -118,7 +118,7 @@ def main() -> None:
             mission_id="M2024_TEST",
             mission_name="Test Mission",
             destination="Mars",
-            launch_date="2026-10-01T10:00:00",
+            launch_date=datetime(2026, 10, 1, 10, 0, 0),
             duration_days=100,
             crew=[
                 CrewMember(
